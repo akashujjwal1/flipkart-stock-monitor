@@ -22,8 +22,6 @@ def load_config():
         cfg = json.load(f)
 
     env_overrides = {
-        ("notifications", "telegram", "bot_token"): "TELEGRAM_BOT_TOKEN",
-        ("notifications", "telegram", "chat_id"): "TELEGRAM_CHAT_ID",
         ("notifications", "email", "enabled"): "EMAIL_ENABLED",
         ("notifications", "email", "sender_email"): "EMAIL_SENDER",
         ("notifications", "email", "sender_password"): "EMAIL_PASSWORD",
@@ -60,17 +58,21 @@ def check_stock(url, headers):
     return None
 
 
-def send_telegram(config, message):
-    tg = config["notifications"].get("telegram", {})
-    if not tg.get("bot_token") or not tg.get("chat_id"):
+def send_ntfy(config, message):
+    ntfy_cfg = config["notifications"].get("ntfy", {})
+    topic = ntfy_cfg.get("topic")
+    if not topic:
         return False
     try:
-        import requests
-        url = f"https://api.telegram.org/bot{tg['bot_token']}/sendMessage"
-        requests.get(url, params={"chat_id": tg["chat_id"], "text": message}, timeout=10)
+        requests.post(
+            f"https://ntfy.sh/{topic}",
+            data=message.encode("utf-8"),
+            headers={"Title": "Flipkart Stock Alert", "Priority": "high"},
+            timeout=10,
+        )
         return True
     except Exception as e:
-        print(f"[!] Telegram failed: {e}")
+        print(f"[!] ntfy.sh failed: {e}")
         return False
 
 
@@ -98,7 +100,7 @@ def send_email(config, subject, body):
 def notify(config, product_url):
     msg = f"Flipkart Stock Alert!\nPS5 is back in stock!\n{product_url}"
     print(f"[!] {msg}")
-    send_telegram(config, msg)
+    send_ntfy(config, msg)
     send_email(config, "Flipkart Stock Alert!", msg)
 
 
