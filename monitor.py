@@ -22,6 +22,7 @@ def load_config():
         cfg = json.load(f)
 
     env_overrides = {
+        "product_url": "PRODUCT_URL",
         ("notifications", "email", "enabled"): "EMAIL_ENABLED",
         ("notifications", "email", "sender_email"): "EMAIL_SENDER",
         ("notifications", "email", "sender_password"): "EMAIL_PASSWORD",
@@ -30,13 +31,16 @@ def load_config():
         val = os.environ.get(env_var)
         if val is not None:
             d = cfg
-            for k in keys[:-1]:
-                d = d[k]
-            if env_var.endswith("_ENABLED"):
-                val = val.lower() == "true"
-            elif env_var.endswith("_PORT"):
-                val = int(val)
-            d[keys[-1]] = val
+            if isinstance(keys, str):
+                d[keys] = val
+            else:
+                for k in keys[:-1]:
+                    d = d[k]
+                if env_var.endswith("_ENABLED"):
+                    val = val.lower() == "true"
+                elif env_var.endswith("_PORT"):
+                    val = int(val)
+                d[keys[-1]] = val
 
     return cfg
 
