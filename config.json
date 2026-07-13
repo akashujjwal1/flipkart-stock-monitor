@@ -6,8 +6,8 @@
             "enabled": false,
             "account_sid": "",
             "auth_token": "",
-            "from_number": "",
-            "to_number": ""
+            "from_number": "+1234567890",
+            "to_number": "+919XXXXXXXXX"
         },
         "email": {
             "enabled": false,
@@ -15,7 +15,7 @@
             "smtp_port": 587,
             "sender_email": "",
             "sender_password": "",
-            "recipient_email": ""
+            "recipient_email": "you@example.com"
         }
     }
 }

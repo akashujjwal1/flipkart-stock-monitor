@@ -25,14 +25,9 @@ def load_config():
         ("notifications", "twilio", "enabled"): "TWILIO_ENABLED",
         ("notifications", "twilio", "account_sid"): "TWILIO_ACCOUNT_SID",
         ("notifications", "twilio", "auth_token"): "TWILIO_AUTH_TOKEN",
-        ("notifications", "twilio", "from_number"): "TWILIO_FROM_NUMBER",
-        ("notifications", "twilio", "to_number"): "TWILIO_TO_NUMBER",
         ("notifications", "email", "enabled"): "EMAIL_ENABLED",
-        ("notifications", "email", "smtp_server"): "EMAIL_SMTP_SERVER",
-        ("notifications", "email", "smtp_port"): "EMAIL_SMTP_PORT",
         ("notifications", "email", "sender_email"): "EMAIL_SENDER",
         ("notifications", "email", "sender_password"): "EMAIL_PASSWORD",
-        ("notifications", "email", "recipient_email"): "EMAIL_RECIPIENT",
     }
     for keys, env_var in env_overrides.items():
         val = os.environ.get(env_var)
