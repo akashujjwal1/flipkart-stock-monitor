@@ -1,0 +1,21 @@
+{
+    "product_url": "https://dl.flipkart.com/dl/sony-ps5-digital-cfi-2116b01y-825-gb/p/itm7124b7348127b?pid=GMCHN3VPFGG9NWCB&lid=LSTGMCHN3VPFGG9NWCBMIQFYQ&marketplace=FLIPKART",
+    "check_interval_seconds": 60,
+    "notifications": {
+        "twilio": {
+            "enabled": false,
+            "account_sid": "",
+            "auth_token": "",
+            "from_number": "",
+            "to_number": ""
+        },
+        "email": {
+            "enabled": false,
+            "smtp_server": "smtp.gmail.com",
+            "smtp_port": 587,
+            "sender_email": "",
+            "sender_password": "",
+            "recipient_email": ""
+        }
+    }
+}
