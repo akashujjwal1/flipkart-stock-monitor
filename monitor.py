@@ -43,8 +43,15 @@ def load_config():
 
 def check_stock(url, headers):
     scraper = cloudscraper.create_scraper()
-    resp = scraper.get(url, headers=headers, timeout=15)
-    resp.raise_for_status()
+    for attempt in range(3):
+        try:
+            resp = scraper.get(url, headers=headers, timeout=30)
+            resp.raise_for_status()
+            break
+        except Exception:
+            if attempt == 2:
+                raise
+            time.sleep(5)
     soup = BeautifulSoup(resp.text, "html.parser")
     page_text = soup.get_text(separator=" ", strip=True).lower()
 
