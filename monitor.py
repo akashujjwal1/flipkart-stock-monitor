@@ -29,7 +29,7 @@ def load_config():
     }
     for keys, env_var in env_overrides.items():
         val = os.environ.get(env_var)
-        if val is not None:
+        if val:
             d = cfg
             if isinstance(keys, str):
                 d[keys] = val
