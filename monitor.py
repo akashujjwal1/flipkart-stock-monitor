@@ -22,9 +22,8 @@ def load_config():
         cfg = json.load(f)
 
     env_overrides = {
-        ("notifications", "twilio", "enabled"): "TWILIO_ENABLED",
-        ("notifications", "twilio", "account_sid"): "TWILIO_ACCOUNT_SID",
-        ("notifications", "twilio", "auth_token"): "TWILIO_AUTH_TOKEN",
+        ("notifications", "telegram", "bot_token"): "TELEGRAM_BOT_TOKEN",
+        ("notifications", "telegram", "chat_id"): "TELEGRAM_CHAT_ID",
         ("notifications", "email", "enabled"): "EMAIL_ENABLED",
         ("notifications", "email", "sender_email"): "EMAIL_SENDER",
         ("notifications", "email", "sender_password"): "EMAIL_PASSWORD",
@@ -61,21 +60,17 @@ def check_stock(url, headers):
     return None
 
 
-def send_sms_via_twilio(config, message):
-    tw = config["notifications"].get("twilio", {})
-    if not tw.get("enabled"):
+def send_telegram(config, message):
+    tg = config["notifications"].get("telegram", {})
+    if not tg.get("bot_token") or not tg.get("chat_id"):
         return False
     try:
-        from twilio.rest import Client
-        client = Client(tw["account_sid"], tw["auth_token"])
-        client.messages.create(
-            body=message,
-            from_=tw["from_number"],
-            to=tw["to_number"]
-        )
+        import requests
+        url = f"https://api.telegram.org/bot{tg['bot_token']}/sendMessage"
+        requests.get(url, params={"chat_id": tg["chat_id"], "text": message}, timeout=10)
         return True
     except Exception as e:
-        print(f"[!] Twilio SMS failed: {e}")
+        print(f"[!] Telegram failed: {e}")
         return False
 
 
@@ -103,7 +98,7 @@ def send_email(config, subject, body):
 def notify(config, product_url):
     msg = f"Flipkart Stock Alert!\nPS5 is back in stock!\n{product_url}"
     print(f"[!] {msg}")
-    send_sms_via_twilio(config, msg)
+    send_telegram(config, msg)
     send_email(config, "Flipkart Stock Alert!", msg)
 
 
