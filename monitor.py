@@ -52,9 +52,13 @@ def check_stock(url, headers):
             resp = scraper.get(url, headers=headers, timeout=30)
             resp.raise_for_status()
             break
-        except Exception:
+        except Exception as e:
             if attempt == 2:
-                raise
+                # A transient network error or a bot-protection response must
+                # not make the scheduled GitHub Actions check fail.  Treat it
+                # as an indeterminate stock result so the next run can retry.
+                print(f"[!] Stock check failed after 3 attempts: {e}")
+                return None
             time.sleep(5)
     soup = BeautifulSoup(resp.text, "html.parser")
     page_text = soup.get_text(separator=" ", strip=True).lower()
